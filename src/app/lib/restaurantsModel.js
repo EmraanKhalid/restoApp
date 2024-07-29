@@ -1,13 +1,15 @@
 const { default: mongoose } = require("mongoose");
 
+
 const restaurantModel = new mongoose.Schema({
-    name:String,
+    resturantName:String,
     email:String,
     password:String,
     city:String,
     address:String,
-    contact:String,
-});
+    contace:String,
+
+})
 
 
 export const restaurantSchema = mongoose.models.resturants || mongoose.model("resturants",restaurantModel);
