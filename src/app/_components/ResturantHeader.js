@@ -23,7 +23,7 @@ const ResturantHeader = () => {
         localStorage.removeItem("restaurantUser");
         router.push("/resturant");
     }
-    console.log(details);
+    // console.log(details);
     return (
         <div className="header-wrapper">
             <div className="logo">

@@ -4,6 +4,7 @@ import ResturantHeader from "@/app/_components/ResturantHeader";
 import "./../style.css"
 import AddFoodItems from "@/app/_components/AddFoodItem";
 import { useState } from "react";
+import FoodItemList from "@/app/_components/FoodItemList";
 
 const Dashboard = () => {
     const [addItem, setAddItem] = useState(false);
@@ -14,7 +15,7 @@ const Dashboard = () => {
              <button onClick={()=>setAddItem(true)}>Add Food Items</button>
              <button onClick={()=>setAddItem(false)}>Dashboard</button>
              {
-                addItem ?<AddFoodItems /> : <h1>Resturant Dashbaord</h1>
+                addItem ?<AddFoodItems /> : <FoodItemList />
              }
             <Footer />
         </div>
