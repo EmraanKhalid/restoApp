@@ -1,45 +1,30 @@
-import { useState } from "react";
-// import { POST } from "../api/resturant/route";
+"use client"
 
-const AddFoodItems = (props) => {
-    const [name,setName]= useState("");
-    const [price, setPrice] = useState("");
-    const [path, setPath] = useState("");
-    const [description, setDescription] = useState("");
-    const [error, setError] = useState(false);
-    const handleAddFoodItem = async () => {
-        if(!name || !price || !path || !description)
-        {
+import { useRouter } from "next/navigation";
+
+const { useState } = require("react")
+
+const EditFoodItem =(props) =>{
+    console.log(props.params.id); 
+    const [name,setName]=useState();
+    const [price,setPrice]=useState();
+    const [path, setPath]=useState();
+    const [description,setDescription]=useState();
+    const [error,setError]=useState(false);
+    const router = useRouter();
+
+    const handleUpdateFoodItem = async () => {
+        console.log(name,price,path,description);
+        if(!name || !price || !path || !description){
             setError(true);
-            return false;
-        }
-        else{
+            return;
+        }else{
             setError(false);
         }
-        let resto_id;
-        const restaurantData = JSON.parse(localStorage.getItem("restaurantUser"));
-        if(restaurantData){
-            resto_id = restaurantData._id;
-        }
-
-        let response = await fetch("http://localhost:3000/api/resturant/foods",{
-            method: "POST",
-            body: JSON.stringify({name,price,img_path: path,description,resto_id})
-        });
-
-        response = await response.json();
-        if(response.success){
-            alert("Food Item Addes Succesfully");
-            props.setAddItem(false);
-        }
-        else{
-            alert("Something went wrongg. Try Again");
-        }
     }
-
     return(
         <div className="container">
-            <h1>Add Food Item</h1>
+            <h1>Update Food Item</h1>
             <div className="input-wrapper">
                 <input type="text" className="input-field" placeholder="Enter Food Name" value={name} 
                 onChange={(e)=>setName(e.target.value)} />
@@ -69,10 +54,13 @@ const AddFoodItems = (props) => {
                 }
             </div>
             <div className="input-wrapper">
-                <button className="button" onClick={handleAddFoodItem}>Add Food Item</button>
+                <button className="button" onClick={handleUpdateFoodItem}>Update Food Item</button>
+            </div>
+            <div className="input-wrapper">
+                <button className="button" onClick={()=>router.push("/resturant/dashboard")}>Back to Food Item</button>
             </div>
         </div>
     );
 }
 
-export default AddFoodItems;
+export default EditFoodItem;

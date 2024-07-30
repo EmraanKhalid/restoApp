@@ -1,7 +1,9 @@
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const FoodItemList = () => {
     const [foodItems, setFoodItems] = useState();
+    const router = useRouter();
 
     useEffect(()=>{
         loadFoodItems();
@@ -18,6 +20,19 @@ const FoodItemList = () => {
         else{
             alert("Food item list Not Avaliable");
         }
+    }
+    const deleteFoodItem = async (id) =>{
+        let response = await fetch("http://localhost:3000/api/resturant/foods/"+id,{
+                method: 'delete'
+            });
+            response = await response.json();
+            if(response.success){
+                loadFoodItems();
+            }else{
+                alert("Something went Wrong. Try Again.");
+            }
+
+
     }
     return(
         <div>
@@ -42,7 +57,8 @@ const FoodItemList = () => {
                                 <td>{item.price}</td>
                                 <td>{item.description}</td>
                                 <td><img src={item.img_path} /></td>
-                                <td><button>Delete</button> |  <button>Edit</button></td>
+                                <td><button onClick={()=>deleteFoodItem(item._id)}>Delete</button> | 
+                                 <button onClick={()=>router.push('dashboard/'+item._id)}>Edit</button></td>
                             </tr>
                         ))
                     }
