@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-const { useState } = require("react")
+const { useState, useEffect } = require("react")
 
 const EditFoodItem =(props) =>{
     console.log(props.params.id); 
@@ -13,6 +13,22 @@ const EditFoodItem =(props) =>{
     const [error,setError]=useState(false);
     const router = useRouter();
 
+    useEffect(()=>{
+        handleloadFoodItem();
+    },[]);
+
+    const handleloadFoodItem = async() => {
+        let response = await fetch(`http://localhost:3000/api/resturant/foods/edit/${props.params.id}`);
+        response = await response.json();
+        if(response.success){
+            console.log(response.result);
+            setName(response.result.name);
+            setPrice(response.result.price);
+            setPath(response.result.img_path);
+            setDescription(response.result.description);
+        }
+    }
+
     const handleUpdateFoodItem = async () => {
         console.log(name,price,path,description);
         if(!name || !price || !path || !description){
@@ -21,6 +37,18 @@ const EditFoodItem =(props) =>{
         }else{
             setError(false);
         }
+        let response = await fetch(`http://localhost:3000/api/resturant/foods/edit/${props.params.id}`,{
+            method: 'PUT',
+            body: JSON.stringify({name,price,path,description})
+        });
+        response = await response.json();
+        if(response.success){
+            router.push('http://localhost:3000/resturant/dashboard');
+        }
+        else{
+            alert("Something Went Wrong. Try Again");
+        }
+
     }
     return(
         <div className="container">
