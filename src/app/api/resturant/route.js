@@ -6,7 +6,9 @@ import { NextResponse } from "next/server";
 export async function GET(){
     
     await mongoose.connect(connectionStr,{
-        serverSelectionTimeoutMS: 5000000 // Increase as needed
+        serverSelectionTimeoutMS: 30000, // Increase as needed
+        connectTimeoutMS: 30000,
+        socketTimeoutMS: 30000
     });
     const data = await restaurantSchema.find();
     console.log(data);
@@ -18,7 +20,9 @@ export async function POST(request){
     let payload = await request.json();
     let result;
     await mongoose.connect(connectionStr,{
-        serverSelectionTimeoutMS: 5000000 // Increase as needed
+        serverSelectionTimeoutMS: 30000, // Increase as needed
+        connectTimeoutMS: 30000,
+        socketTimeoutMS: 30000
     });
     if(payload.login){
         //login code

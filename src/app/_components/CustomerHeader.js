@@ -1,25 +1,109 @@
+"use client"
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-const CustomerHeader =()=>{
+const CustomerHeader = (props) => {
+    
+    const userStorage = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'));
+    const cartStorage = localStorage.getItem('cart') && JSON.parse(localStorage.getItem('cart'));
+    const [user, setUser] = useState(userStorage ? userStorage : undefined);
+    const [cartNumber, setCartNumber] = useState(cartStorage?.length);
+    const [cartItem, setCartItem] = useState(cartStorage);
+    const router = useRouter();
+    // console.log(user['name']);
+    // console.log(cartStorage);
+    useEffect(() => {
+        if (props.cartData) {
+            if (cartNumber) {
+                if (cartItem[0].resto_id != props.cartData.resto_id) {
+                    localStorage.removeItem('cart');
+                    setCartNumber(1);
+                    setCartItem([props.cartData]);
+                    localStorage.setItem('cart', JSON.stringify([props.cartData]));
+                } else {
+                    let localCartItem = cartItem;
+                    localCartItem.push(JSON.parse(JSON.stringify(props.cartData)))
+                    setCartItem(localCartItem);
+                    setCartNumber(cartNumber + 1);
+                    localStorage.setItem('cart', JSON.stringify([localCartItem]));
+                }
+            } else {
+                setCartNumber(1);
+                setCartItem([props.cartData]);
+                localStorage.setItem('cart', JSON.stringify([props.cartData]));
+            }
+        }
+
+    }, [props.cartData]);
+
+    useEffect(() => {
+        if (props.removeCartData) {
+            let localCartItem = cartItem.filter((item) => {
+                return item._id != props.removeCartData;
+            });
+            setCartItem(localCartItem);
+            setCartNumber(cartNumber - 1);
+            localStorage.setItem('cart', JSON.stringify([localCartItem]));
+            if (localCartItem.length == 0) {
+                localStorage.removeItem('cart');
+            }
+        }
+    }, [props.removeCartData]);
+
+    useEffect(()=>{
+        if(props.removeCartData){
+            setCartItem([]);
+            setCartNumber(0);
+            localStorage.removeItem('cart');
+        }
+
+    },[props.removeCartData])
+
+
+    const logout = () => {
+        localStorage.removeItem('user');
+        router.push('/user-auth');
+    }
+
+
     return (
         <div className="header-wrapper">
             <div className="logo">
-            <img style={{ width: 150 }} src="https://s.tmimgcdn.com/scr/1200x627/242400/food-delivery-custom-design-logo-template_242462-original.png" />
+                <img style={{ width: 150 }} src="https://s.tmimgcdn.com/scr/1200x627/242400/food-delivery-custom-design-logo-template_242462-original.png" />
             </div>
             <ul>
                 <li>
                     <Link href="/">Home</Link>
-                </li>                <li>
-                    <Link href="/">Login</Link>
-                </li>
+                </li>                
+                {
+                    user ?
+                    <>
+                        <li>
+                            <Link href="/myprofile">{user['name'] ? (user['name']): (user.result.name)}</Link>
+                        </li>
+                        <li>
+                            <button className="logout-button" onClick={logout}>Logout</button>
+                        </li>
+                    </>
+                    :
+                    <>
+                        <li>
+                            <Link href="/user-auth">Login</Link>
+                        </li>
+                        <li>
+                            <Link href="/user-auth">Sign Up</Link>
+                        </li>
+                    </>
+                }
                 <li>
-                    <Link href="/">Sign Up</Link>
-                </li>
-                <li>
-                    <Link href="/">Cart{0}</Link>
+                    <Link href={cartNumber ? "/cart" : "#"}>Cart({cartNumber ? cartNumber : 0})</Link>
                 </li>
                 <li>
                     <Link href="/">Add Restaurants </Link>
+                </li>
+                <li>
+                    <Link href="/deliverypartner">Delivery Partner </Link>
                 </li>
             </ul>
         </div>

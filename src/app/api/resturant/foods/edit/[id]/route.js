@@ -8,7 +8,9 @@ export async function GET(request,content){
     let success = false;
 
     await mongoose.connect(connectionStr,{
-        serverSelectionTimeoutMS: 50000000
+        serverSelectionTimeoutMS: 30000, // Increase as needed
+        connectTimeoutMS: 30000,
+        socketTimeoutMS: 30000
     });
     const result = await foodSchema.findOne({_id:id});
     if(result){
@@ -24,7 +26,9 @@ export async function PUT(request,content){
     const payload = await request.json();
     let success = false;
     await mongoose.connect(connectionStr,{
-        serverSelectionTimeoutMS: 50000000
+        serverSelectionTimeoutMS: 30000, // Increase as needed
+        connectTimeoutMS: 30000,
+        socketTimeoutMS: 30000
     });
     const result = await foodSchema.findOneAndUpdate({_id:id},payload);
     if(result){
